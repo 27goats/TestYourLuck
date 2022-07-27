@@ -1,0 +1,117 @@
+import math
+import random
+
+def show_menu():
+	print("Welcome to the Treasure Hunt Game Program!")
+	print("To play Treasure Hunt, type '1'")
+	print("To run the Monte Carlo Simulation to see your chances of winning the game, type '2'")
+	print("To quit, type '0'")
+
+def play_game():
+ # initial conditions
+  death = False
+  win = False
+  gold = 0
+  health = 20
+  again = 1
+
+  # dice roll
+  roll = math.floor(10*random.random()) + 1
+  print("you rolled a: ", roll)
+
+  # game conditions and loop
+  while (death == False and again == 1 and win == False):
+    if (roll == 4):
+      print("INSTANT DEATH.")
+      death = True
+    else:
+      # gold coins
+      if (roll == 1 or roll == 7):
+        gold = gold + 1
+        print("You've struck GOLD! Congrats, you now have", gold, "gold point(s).")
+        # WINNING CONDITIONS!
+        if (gold == 3):
+          print("\nCONGRATULATIONS! YOU WON THE GAME!!!")
+          win = True
+      else:
+        # health points taken away
+        health = health - roll
+        print("You've been hit!", roll, "health points have been deducted. You have", health, "points left.")
+      if (health <= 0):
+        # death from loss of health points 
+        print("\nYou died. And lost the game :P")
+        death = True
+      elif (death == False and win == False):
+        # roll again and (potentially) loop
+        again = float(input("\nWould you like to roll again? Type '1' to roll, '0' to quit. \n"))
+        if (again == 1):
+          roll = math.floor(10*random.random()) + 1
+          print("\n""you rolled a: ", roll)
+  return roll
+
+def monte_carlo():
+  def auto_game():
+    # initial conditions
+    gold = 0
+    health = 20
+    death = False
+    win = False
+
+    # roll
+    roll = math.floor(10*random.random()) + 1
+
+    # auto-game in while loop
+    while (death == False and win == False):
+      if (roll == 4):
+        death = True
+      else:
+        if (roll == 1 or roll == 7):
+          gold = gold + 1
+          if (gold == 3):
+            win = True
+        else:
+          health = health - roll
+        if (health <= 0):
+          death = True
+        elif (death == False and win == False):
+          roll = math.floor(10*random.random()) + 1
+    return win
+    
+  # initial conditions for monte 
+  c = 0
+  n = 100000
+  success = 0
+
+  # monte carlo 
+  while (c < n):
+    result = auto_game()
+    if (result == True):
+      success = success + 1
+    c = c + 1
+
+  # probability statement
+  probability = (success / n) * 100
+  print("The probability of you winning the Treasure Hunt Game is: ", probability, "%")
+
+#--------MAIN CALLING ROUTINE--------#
+
+show_menu()
+choice = float(input())
+
+while (choice != 0):
+  if (choice == 1):
+    # to play game
+    print("Lets play! \n")
+    roll = play_game()
+  elif (choice == 2):
+    # to see probability of winning
+    prob = monte_carlo()
+  else:
+    # invalid input
+    print("Invalid input. Try again.")
+  # loop it
+  choice = float(input("\nTo terminate the program, press '0'. To play the game, press '1'. To see the odds of winning, press '2'.\n"))
+  
+# terminating statement 
+print("Goodbye :)")
+
